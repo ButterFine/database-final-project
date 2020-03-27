@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% extends 'login_nav.html' %} {% block content %}
+{% if user.is_authenticated %}
+
+
+
+
+<head>
+</head>
+
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>
+            <center>Book</center>
+        </h2>
+        <center>
+            <div class="input-group mt-3 mb-3 col-sm-6">
+                <div class="input-group-prepend">
+                    <div class="form-group">
+                        <select class="form-control" name = "filter_input">
+                            <option value="book_name" >Book name</option>
+                            <option value="publisher">Publisher</option>
+                            <option value="author">Author</option>
+                            <option value="pub_date">Publish date</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="text" class="form-control" name = search_input>
+                <div>
+                    <button class="btn btn-light" type="submit">Search</button>
+                </div>
+            </div>
+        </center>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <thead>
+                <tr>
+                    <th>
+                        <center>ID</center>
+                    </th>
+                    <th>
+                        <center>Book name</center>
+                    </th>
+                    <th>
+                        <center>Publish date</center>
+                    </th>
+                    <th>
+                        <center>Publisher</center>
+                    </th>
+                    <th>
+                        <center>Author</center>
+                    </th>
+                </tr>
+            </thead>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>
+                    <center>{{book.id}}</center>
+                </td>
+                <td>{{book.name}}</td>
+                <td>
+                    <center>{{book.publish_date}}</center>
+                </td>
+                <td>
+                    <center>{{book.publisher.name}}</center>
+                </td>
+                <td>
+                    <center>{{book.author.name}}</center>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <center>
+        {% if books.has_other_pages %}
+
+        {% if books.has_previous %}
+        <a class="btn btn-light" href="?page=1">First</a>
+        <a class="btn btn-light" href="?page={{ books.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in books.paginator.page_range %}
+        {% if books.number == num %}
+        <a class="btn btn-dark" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > books.number|add:'-3' and num < books.number|add:'3' %}
+        <a class="btn btn-light" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if books.has_next %}
+        <a class="btn btn-light" href="?page={{ books.next_page_number }}">Next</a>
+        <a class="btn btn-light" href="?page={{ books.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+        {% endif %}
+    </center>
+</body>
+
+{% else %}
+<li class="nav-item">
+    <a class="nav-link" href="/accounts/login">Log In</a>
+</li>
+<h1></h1>
+<h1></h1>
+<h1><center>Please login!</center></h1>
+
+{% endif %}
+{% endblock %}

@@ -1,4 +1,6 @@
-{% extends 'layout.html' %} {% block content %}
+
+{% extends 'user.html' %} {% block content %}
+
 <p></p>
 <p  style="font-size:  30px; 
         font-weight: bold; 
@@ -19,4 +21,5 @@
     <input type="hidden" name="next" value="{{ next }}">
     <a class="btn btn-own" href="/accounts/signup" role="button">Sign up</a>
 </form>
+
 {% endblock %}

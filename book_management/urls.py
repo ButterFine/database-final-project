@@ -18,11 +18,11 @@ from . import views
 
 app_name = 'book_management'
 urlpatterns = [
-    path('',views.homepage,name = 'homepage'),
+    path('',views.index,name = 'index'),
 
     
     path('accounts/signup/',views.signup,name='signup'),
     path('accounts/signup/createuser',views.createuser,name='createuser'),
-    path('logout/',views.homepage,name = 'homepage'),
+    path('logout/',views.index,name = 'index'),
 
 ]

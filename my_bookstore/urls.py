@@ -32,8 +32,18 @@ urlpatterns = [
     url('delete_book/', views.delete_book),
     url('delete_author/', views.delete_author),
     url('delete_publisher/', views.delete_publisher),
-    url('accounts/profile/', views.home),
+    url('accounts/profile/', views.admin_index),
     url('home/', views.home),
+    url('index/', views.index),
+    url('index_book', views.index_book),
+    url('index_publisher', views.index_publisher),
+    url('index_author', views.index_author),
+    url('admin_index/', views.admin_index),
+    url('adminIndexBook/', views.adminIndexBook),
+    url('adminIndexAuthor/', views.adminIndexAuthor),
+    url('adminIndexPublisher/', views.adminIndexPublisher),
+
+   
 
     
     path('',include('book_management.urls')),
