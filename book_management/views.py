@@ -14,6 +14,7 @@ import time
 # Create your views here.
 
 def index(request):
+    auth.logout(request)
     return render(request, 'index.html')
 
 # index book

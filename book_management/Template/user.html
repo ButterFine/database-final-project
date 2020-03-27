@@ -1,6 +1,4 @@
 <html>
-{% if user.is_authenticated %}
-
 <head>
     <meta charset="utf-8">
     <title>Book Finder</title>
@@ -120,9 +118,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="nav nav-tabs">
                 
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown">User: {{user.username}}</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link" href="/logout">Log Out</a>
+
+                    </div>
+                </li>
+                {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="/accounts/login">Log In</a>
                 </li>
+            
+                {% endif %}
                
             </ul>
         </div>
@@ -133,6 +142,5 @@
     </div>
 
 </body>
-{% endif %}
 
 </html>
