@@ -21,7 +21,6 @@ from book_management import views
 
 
 urlpatterns = [
-    url('dbtable',views.dbtable),
     path('admin/', admin.site.urls),
     url('insert_book/', views.insert_book),
     url('insert_author/', views.insert_author),
@@ -33,15 +32,15 @@ urlpatterns = [
     url('delete_author/', views.delete_author),
     url('delete_publisher/', views.delete_publisher),
     url('accounts/profile/', views.admin_index),
-    url('home/', views.home),
+    url('home/', views.admin_index),
     url('index/', views.index),
     url('index_book', views.index_book),
     url('index_publisher', views.index_publisher),
     url('index_author', views.index_author),
     url('admin_index/', views.admin_index),
-    url('adminIndexBook/', views.adminIndexBook),
-    url('adminIndexAuthor/', views.adminIndexAuthor),
-    url('adminIndexPublisher/', views.adminIndexPublisher),
+    url('admin-index-book/', views.adminIndexBook),
+    url('admin-index-author/', views.adminIndexAuthor),
+    url('admin-index-publisher/', views.adminIndexPublisher),
 
    
 

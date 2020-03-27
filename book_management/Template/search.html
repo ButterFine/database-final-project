@@ -1,8 +1,0 @@
-{% extends 'layout.html' %} {% block content %}
-{% if user.is_authenticated %}
-<form action="/search/" method="POST">
-    {% csrf_token %}
-    
-
-{% endif %}
-{% endblock %}

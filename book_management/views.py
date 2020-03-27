@@ -175,10 +175,10 @@ def adminIndexBook(request):
 
 
 
-author_search_status = False
+admin_author_search_status = False
 
 def adminIndexAuthor(request):
-    global author_search_status
+    global admin_author_search_status
     page = request.GET.get('page', 1)
 
     author_list = Author.objects.all().order_by('id')
@@ -193,12 +193,12 @@ def adminIndexAuthor(request):
                 author_list = Author.objects.filter(address__contains = search_input)
             elif filter_input == 'member_in':
                 author_list = Author.objects.filter(member_in__name__contains = search_input)
-            author_search_status = author_list
+            admin_author_search_status = author_list
         else:
-            author_search_status = False
+            admin_author_search_status = False
 
-    if author_search_status != False:
-        author_list = author_search_status
+    if admin_author_search_status != False:
+        author_list = admin_author_search_status
 
 
     paginator = Paginator(author_list, 20)
@@ -211,9 +211,10 @@ def adminIndexAuthor(request):
 
     return render(request, 'adminIndexAuthor.html', {'authors': Authors})
 
+admin_publisher_search_status = False
 
 def adminIndexPublisher(request):
-    global publisher_search_status
+    global admin_publisher_search_status
     page = request.GET.get('page', 1)
 
     publisher_list = Publisher.objects.all().order_by('id')
@@ -228,12 +229,12 @@ def adminIndexPublisher(request):
                 publisher_list = Publisher.objects.filter(address__contains = search_input)
             elif filter_input == 'country':
                 publisher_list = Publisher.objects.filter(country__contains = search_input)
-            publisher_search_status = publisher_list
+            admin_publisher_search_status = publisher_list
         else:
-            publisher_search_status = False
+            admin_publisher_search_status = False
 
-    if publisher_search_status != False:
-        publisher_list = publisher_search_status
+    if admin_publisher_search_status != False:
+        publisher_list = admin_publisher_search_status
 
 
     paginator = Paginator(publisher_list, 20)
@@ -245,80 +246,6 @@ def adminIndexPublisher(request):
         publishers = paginator.page(paginator.num_pages)
 
     return render(request, 'adminIndexPublisher.html', {'publishers': publishers})
-
-
-def homepage (request):
-    auth.logout(request)
-    count = 0
-    ok = ''
-    table = []
-    if request.method == "POST":
-        switch = request.POST["ok"]
-        quanity = request.POST["quanity"]
-        if quanity in ['10', '100', '1000']:
-            if switch == 'Publisher':
-                count = 2
-                table = Publisher.objects.all().order_by('id')[:int(quanity)]
-            elif switch == 'Book':
-                count = 1
-                table = Book.objects.all().order_by('id')[:int(quanity)]
-            elif switch == 'Author':
-                count = 3
-                table = Author.objects.all().order_by('id')[:int(quanity)]
-        else:
-            if switch == 'Publisher':
-                count = 2
-                table = Publisher.objects.defer()
-            elif switch == 'Book':
-                count = 1
-                table = Book.objects.all()
-            elif switch == 'Author':
-                count = 3
-                table = Author.objects.all()
-
-    return render(request,'homepage.html',{'rows':table,'count':count})
-
-
-def home(request):
-    count = 0
-    ok = ''
-    table = []
-    if request.method == "POST":
-        switch = request.POST["ok"]
-        quanity = request.POST["quanity"]
-        if quanity in ['10', '100', '1000']:
-            if switch == 'Publisher':
-                count = 2
-                table = Publisher.objects.all().order_by('id')[:int(quanity)]
-            elif switch == 'Book':
-                count = 1
-                table = Book.objects.all().order_by('id')[:int(quanity)]
-            elif switch == 'Author':
-                count = 3
-                table = Author.objects.all().order_by('id')[:int(quanity)]
-        else:
-            if switch == 'Publisher':
-                count = 2
-                table = Publisher.objects.defer()
-            elif switch == 'Book':
-                count = 1
-                table = Book.objects.all()
-            elif switch == 'Author':
-                count = 3
-                table = Author.objects.all()
-
-    return render(request,'home.html',{'rows':table,'count':count})
-
-def show_book(request):
-    all_books = Book.objects.order_by('id')
-    authors = Author.objects.all()
-    publishers = Publisher.objects.all()
-    context = {
-        'all_books' : all_books,
-        'authors' : authors,
-        'publishers' : publishers
-    }
-    return render(request, 'home.html', context)
 
 def insert_book(request):
     authors = Author.objects.all()
@@ -363,12 +290,47 @@ def insert_publisher(request):
         messages.success(request, 'Your insert successfully.')
     return render(request, 'insert_publisher.html')
 
+update_book_search_status = False
+
 def update_book(request):
-    all_books = Book.objects.order_by('id')
+    global update_book_search_status
+    page = request.GET.get('page', 1)
+
+    book_list = Book.objects.all().order_by('id')
+
+    if request.method == "POST":
+        search_input = request.POST["search_input"]
+        filter_input = request.POST["filter_input"]
+        if search_input != '':
+            if filter_input == 'book_name':
+                book_list = Book.objects.filter(name__contains = search_input)
+            elif filter_input == 'publisher':
+                book_list = Book.objects.filter(publisher__name__contains = search_input)
+            elif filter_input == 'author':
+                book_list = Book.objects.filter(author__name__contains = search_input)
+            elif filter_input == 'pub_date':
+                book_list = Book.objects.filter(publish_date__contains = search_input)
+            update_book_search_status = book_list
+        else:
+            update_book_search_status = False
+
+    if update_book_search_status != False:
+        book_list = update_book_search_status
+
+
+    paginator = Paginator(book_list, 20)
+    try:
+        books = paginator.page(page)
+    except PageNotAnInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.page(paginator.num_pages)
+
     authors = Author.objects.all()
     publishers = Publisher.objects.all()
+
     context = {
-        'all_books' : all_books,
+        'books' : books,
         'authors' : authors,
         'publishers' : publishers
     }
@@ -383,10 +345,42 @@ def update_book(request):
         messages.success(request, 'Your update successfully.')
     return render(request, 'update_book.html', context)
 
+update_author_search_status = False
+
 def update_author(request):
-    authors = Author.objects.all()
+    global update_author_search_status
+    page = request.GET.get('page', 1)
+
+    author_list = Author.objects.all().order_by('id')
+
+    if request.method == "POST":
+        search_input = request.POST["search_input"]
+        filter_input = request.POST["filter_input"]
+        if search_input != '':
+            if filter_input == 'author_name':
+                author_list = Author.objects.filter(name__contains = search_input)
+            elif filter_input == 'address':
+                author_list = Author.objects.filter(address__contains = search_input)
+            elif filter_input == 'member_in':
+                author_list = Author.objects.filter(member_in__name__contains = search_input)
+            update_author_search_status = author_list
+        else:
+            update_author_search_status = False
+
+    if update_author_search_status != False:
+        author_list = update_author_search_status
+
+
+    paginator = Paginator(author_list, 20)
+    try:
+        Authors = paginator.page(page)
+    except PageNotAnInteger:
+        Authors = paginator.page(1)
+    except EmptyPage:
+        Authors = paginator.page(paginator.num_pages)
+
     context = {
-        'authors' : authors,
+        'authors' : Authors,
     }
     if request.method == 'POST':
         author_id = str(request.POST['id'])
@@ -400,8 +394,40 @@ def update_author(request):
         messages.success(request, 'Your update successfully.')
     return render(request, 'update_author.html', context)
 
+update_publisher_search_status = False
+
 def update_publisher(request):
-    publishers = Publisher.objects.all()
+    global update_publisher_search_status
+    page = request.GET.get('page', 1)
+
+    publisher_list = Publisher.objects.all().order_by('id')
+
+    if request.method == "POST":
+        search_input = request.POST["search_input"]
+        filter_input = request.POST["filter_input"]
+        if search_input != '':
+            if filter_input == 'pub_name':
+                publisher_list = Publisher.objects.filter(name__contains = search_input)
+            elif filter_input == 'address':
+                publisher_list = Publisher.objects.filter(address__contains = search_input)
+            elif filter_input == 'country':
+                publisher_list = Publisher.objects.filter(country__contains = search_input)
+            update_publisher_search_status = publisher_list
+        else:
+            update_publisher_search_status = False
+
+    if update_publisher_search_status != False:
+        publisher_list = update_publisher_search_status
+
+
+    paginator = Paginator(publisher_list, 20)
+    try:
+        publishers = paginator.page(page)
+    except PageNotAnInteger:
+        publishers = paginator.page(1)
+    except EmptyPage:
+        publishers = paginator.page(paginator.num_pages)
+
     context = {
         'publishers' : publishers
     }
@@ -415,10 +441,43 @@ def update_publisher(request):
         messages.success(request, 'Your update successfully.')
     return render(request, 'update_publisher.html', context)
 
+delete_book_search_status = False
+
 def delete_book(request):
-    all_books = Book.objects.order_by('id')
+    global delete_book_search_status
+    page = request.GET.get('page', 1)
+
+    book_list = Book.objects.all().order_by('id')
+
+    if request.method == "POST":
+        search_input = request.POST["search_input"]
+        filter_input = request.POST["filter_input"]
+        if search_input != '':
+            if filter_input == 'book_name':
+                book_list = Book.objects.filter(name__contains = search_input)
+            elif filter_input == 'publisher':
+                book_list = Book.objects.filter(publisher__name__contains = search_input)
+            elif filter_input == 'author':
+                book_list = Book.objects.filter(author__name__contains = search_input)
+            elif filter_input == 'pub_date':
+                book_list = Book.objects.filter(publish_date__contains = search_input)
+            delete_book_search_status = book_list
+        else:
+            delete_book_search_status = False
+
+    if delete_book_search_status != False:
+        book_list = delete_book_search_status
+
+
+    paginator = Paginator(book_list, 20)
+    try:
+        books = paginator.page(page)
+    except PageNotAnInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.page(paginator.num_pages)
     context = {
-        'all_books' : all_books,
+        'books' : books,
     }
     if request.method == 'POST':
         book_id = int(request.POST['id'])
@@ -426,10 +485,42 @@ def delete_book(request):
         book.delete()
     return render(request, 'delete_book.html', context)
 
+delete_author_search_status = False
+
 def delete_author(request):
-    authors = Author.objects.all()
+    global delete_author_search_status
+    page = request.GET.get('page', 1)
+
+    author_list = Author.objects.all().order_by('id')
+
+    if request.method == "POST":
+        search_input = request.POST["search_input"]
+        filter_input = request.POST["filter_input"]
+        if search_input != '':
+            if filter_input == 'author_name':
+                author_list = Author.objects.filter(name__contains = search_input)
+            elif filter_input == 'address':
+                author_list = Author.objects.filter(address__contains = search_input)
+            elif filter_input == 'member_in':
+                author_list = Author.objects.filter(member_in__name__contains = search_input)
+            delete_author_search_status = author_list
+        else:
+            delete_author_search_status = False
+
+    if delete_author_search_status != False:
+        author_list = delete_author_search_status
+
+
+    paginator = Paginator(author_list, 20)
+    try:
+        Authors = paginator.page(page)
+    except PageNotAnInteger:
+        Authors = paginator.page(1)
+    except EmptyPage:
+        Authors = paginator.page(paginator.num_pages)
+  
     context = {
-        'authors' : authors,
+        'authors' : Authors,
     }
     if request.method == 'POST':
         author_id = int(request.POST['id'])
@@ -437,8 +528,40 @@ def delete_author(request):
         author.delete()
     return render(request, 'delete_author.html', context)
 
+delete_publisher_search_status = False
+
 def delete_publisher(request):
-    publishers = Publisher.objects.all()
+    global delete_publisher_search_status
+    page = request.GET.get('page', 1)
+
+    publisher_list = Publisher.objects.all().order_by('id')
+
+    if request.method == "POST":
+        search_input = request.POST["search_input"]
+        filter_input = request.POST["filter_input"]
+        if search_input != '':
+            if filter_input == 'pub_name':
+                publisher_list = Publisher.objects.filter(name__contains = search_input)
+            elif filter_input == 'address':
+                publisher_list = Publisher.objects.filter(address__contains = search_input)
+            elif filter_input == 'country':
+                publisher_list = Publisher.objects.filter(country__contains = search_input)
+            delete_publisher_search_status = publisher_list
+        else:
+            delete_publisher_search_status = False
+
+    if delete_publisher_search_status != False:
+        publisher_list = delete_publisher_search_status
+
+
+    paginator = Paginator(publisher_list, 20)
+    try:
+        publishers = paginator.page(page)
+    except PageNotAnInteger:
+        publishers = paginator.page(1)
+    except EmptyPage:
+        publishers = paginator.page(paginator.num_pages)
+
     context = {
         'publishers' : publishers
     }
@@ -447,35 +570,6 @@ def delete_publisher(request):
         pub = get_object_or_404(Publisher, pk=pub_id)
         pub.delete()
     return render(request, 'delete_publisher.html', context)
-
-def dbtable(request):
-    count = 0
-    ok = ''
-    table = []
-    if request.method == "POST":
-        switch = request.POST["ok"]
-        quanity = request.POST["quanity"]
-        if quanity in ['10', '100', '1000']:
-            if switch == 'Publisher':
-                count = 2
-                table = Publisher.objects.all().order_by('id')[:int(quanity)]
-            elif switch == 'Book':
-                count = 1
-                table = Book.objects.all().order_by('id')[:int(quanity)]
-            elif switch == 'Author':
-                count = 3
-                table = Author.objects.all().order_by('id')[:int(quanity)]
-        else:
-            if switch == 'Publisher':
-                count = 2
-                table = Publisher.objects.all()
-            elif switch == 'Book':
-                count = 1
-                table = Book.objects.all()
-            elif switch == 'Author':
-                count = 3
-                table = Author.objects.all()
-    return render(request,'dbtable.html',{'rows':table,'count':count})
 
 def signup (request):
     return render(request,'signup.html')
