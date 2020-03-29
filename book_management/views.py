@@ -299,7 +299,7 @@ def update_book(request):
 
     book_list = Book.objects.all().order_by('id')
 
-    if request.method == "POST":
+    if "search" in request.POST:
         search_input = request.POST["search_input"]
         filter_input = request.POST["filter_input"]
         if search_input != '':
@@ -335,7 +335,7 @@ def update_book(request):
         'authors' : authors,
         'publishers' : publishers
     }
-    if request.method == 'POST':
+    if "update" in request.POST:
         book_id = int(request.POST['id'])
         book_name = str(request.POST['book_name'])
         publisher = int(request.POST['pub_id'])
@@ -354,7 +354,7 @@ def update_author(request):
 
     author_list = Author.objects.all().order_by('id')
 
-    if request.method == "POST":
+    if "search" in request.POST:
         search_input = request.POST["search_input"]
         filter_input = request.POST["filter_input"]
         if search_input != '':
@@ -383,7 +383,7 @@ def update_author(request):
     context = {
         'authors' : Authors,
     }
-    if request.method == 'POST':
+    if "update" in request.POST:
         author_id = str(request.POST['id'])
         author_name = str(request.POST['author_name'])
         address = str(request.POST['address'])
@@ -403,7 +403,7 @@ def update_publisher(request):
 
     publisher_list = Publisher.objects.all().order_by('id')
 
-    if request.method == "POST":
+    if "search" in request.POST:
         search_input = request.POST["search_input"]
         filter_input = request.POST["filter_input"]
         if search_input != '':
@@ -432,7 +432,7 @@ def update_publisher(request):
     context = {
         'publishers' : publishers
     }
-    if request.method == 'POST':
+    if "update" in request.POST:
         publisher_id = str(request.POST['id'])
         publisher_name = str(request.POST['pub_name'])
         address = str(request.POST['address'])
@@ -450,7 +450,7 @@ def delete_book(request):
 
     book_list = Book.objects.all().order_by('id')
 
-    if request.method == "POST":
+    if "search" in request.POST:
         search_input = request.POST["search_input"]
         filter_input = request.POST["filter_input"]
         if search_input != '':
@@ -480,7 +480,7 @@ def delete_book(request):
     context = {
         'books' : books,
     }
-    if request.method == 'POST':
+    if "delete" in request.POST:
         book_id = int(request.POST['id'])
         book = get_object_or_404(Book, pk=book_id)
         book.delete()
@@ -494,7 +494,7 @@ def delete_author(request):
 
     author_list = Author.objects.all().order_by('id')
 
-    if request.method == "POST":
+    if "search" in request.POST:
         search_input = request.POST["search_input"]
         filter_input = request.POST["filter_input"]
         if search_input != '':
@@ -523,7 +523,7 @@ def delete_author(request):
     context = {
         'authors' : Authors,
     }
-    if request.method == 'POST':
+    if "delete" in request.POST:
         author_id = int(request.POST['id'])
         author = get_object_or_404(Author, pk=author_id)
         author.delete()
@@ -537,7 +537,7 @@ def delete_publisher(request):
 
     publisher_list = Publisher.objects.all().order_by('id')
 
-    if request.method == "POST":
+    if "search" in request.POST:
         search_input = request.POST["search_input"]
         filter_input = request.POST["filter_input"]
         if search_input != '':
@@ -566,7 +566,7 @@ def delete_publisher(request):
     context = {
         'publishers' : publishers
     }
-    if request.method == 'POST':
+    if "delete" in request.POST:
         pub_id = int(request.POST['id'])
         pub = get_object_or_404(Publisher, pk=pub_id)
         pub.delete()

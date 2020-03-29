@@ -99,7 +99,7 @@
                 </div>
                 <input type="text" class="form-control" name=search_input>
                 <div>
-                    <button class="btn btn-light" type="submit">Search</button>
+                    <button class="btn btn-light" type="submit" name = "search">Search</button>
                 </div>
             </div>
         </center>
@@ -162,7 +162,7 @@
                                         {% csrf_token %}
                                         <p>Are you sure to delete "{{publisher.name}}" ?</p>
                                         <input type="hidden" name="id" value="{{publisher.id}}">
-                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                        <button type="submit" class="btn btn-danger" name = "delete">Yes</button>
                                 </div>
                                 </form>
                             </div>
